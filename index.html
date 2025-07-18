@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Food</title>
+    <title>Resturant</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/class.css">
 </head>
@@ -288,8 +288,8 @@
                 <a href="#" class="link">instagram</a>
                 <a href="#" class="link">facebook</a>
             </div>
-            <div class="pepper">
-                <img src="icons/veg.svg" alt="pepper">
+            <div class="footerLogo">
+                <img src="icons/logo_white.svg" alt="pepper">
             </div>
             <div class="call">
                 <div class="subtitle">Или позвоните нам</div>
@@ -305,9 +305,18 @@
                 <form action="#">
                     <div data-close class="modal__close">&times;</div>
                     <div class="modal__title">Мы свяжемся с вами как можно быстрее!</div>
-                    <input required placeholder="Ваше имя" name="name" type="text" class="modal__input">
-                    <input required placeholder="Ваш номер телефона" name="phone" type="phone" class="modal__input">
-                    <button class="btn btn_dark btn_min">Перезвонить мне</button>
+                    <input  required placeholder="Ваше имя" name="name" type="text" class="modal__input nameInput">
+                    <div class="phone-input">
+                        <select class="prefix-select">
+                            <option value="+374">🇦🇲 +374</option>
+                            <option value="+7">🇷🇺 +7</option>
+                            <option value="+1">🇺🇸 +1</option>
+                            <option value="+44">🇬🇧 +44</option>
+                            <option value="+65">🇸🇬 +65</option>
+                        </select>
+                        <input type="tel" class="phone-number" placeholder="9123 4567">
+                    </div>
+                    <button class="mbtn btn btn_dark btn_min" type="button" >Перезвонить мне</button>
                 </form>
             </div>
         </div>

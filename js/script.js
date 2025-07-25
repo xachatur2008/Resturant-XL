@@ -100,13 +100,7 @@ window.addEventListener("DOMContentLoaded", () => {
             //---------------MODAL---------------
 
     const openBtns = document.querySelectorAll('[data-modal]'),
-        closeBtn = document.querySelector('[data-close]'),  
-        modalWindow = document.querySelector('.modal'),
-        submit = document.querySelector('.mbtn'),
-        NameInput = document.querySelector('.nameInput'),
-        NumInput = document.querySelector(".phone-number"),
-        modalTitle = document.querySelector(".modal__title"),
-        countryCode = document.querySelector(".prefix-select")
+          modalWindow = document.querySelector('.modal')
 
     
     function showModal(){
@@ -119,16 +113,7 @@ window.addEventListener("DOMContentLoaded", () => {
     function hideModal(){
         modalWindow.classList.add('hide')
         modalWindow.classList.remove('show')
-        document.body.style.overflow = ''
-        [NameInput, countryCode, NumInput].forEach(input => {
-            input.classList.remove('hide')
-            if(input.tagName === 'INPUT') input.value = ''
-        })
-
-        submit.classList.remove('hide')
-        modalTitle.textContent = "Заполните форму"
-        modalTitle.style.color = ''
-        modalTitle.style.marginTop = ''
+        document.body.style.overflow = 'auto'
     }
     
 
@@ -137,10 +122,9 @@ window.addEventListener("DOMContentLoaded", () => {
         button.addEventListener('click', showModal)
     })
     
-    closeBtn.addEventListener('click', hideModal)
-
+    
     modalWindow.addEventListener('click', (e)=> {
-        if(e.target === modalWindow){
+        if(e.target === modalWindow || e.target.getAttribute('data-close') == ''){
            hideModal();
         }
     })
@@ -163,54 +147,158 @@ window.addEventListener("DOMContentLoaded", () => {
 
      // window.addEventListener('scroll', byScroll)
 
-    function fillingApplication(){
-         let data;
-         if(NameInput.value.trim() !== "" && NumInput.value.trim() !== ""){
-            data = {
-                name :NameInput.value,
-                Telephone:NumInput.value
+
+
+
+
+    // ------------------------class for cards------------------------
+
+    class MenuCard {
+        constructor(src, alt, title, descr, price, parentSlector, ...classes){
+            this.src = src;
+            this.alt = alt
+            this.title = title;
+            this.descr = descr;
+            this.price = price;
+            this.classes = classes;
+            this.parent = document.querySelector(parentSlector);
+            this.transfer = 100;
+        }
+
+        changeToAMD(){
+            this.price =  this.price * this.transfer
+        }
+
+        render(){
+            this.changeToAMD();
+            
+            const element = document.createElement('div');
+            if(this.classes.length === 0){
+                this.element = 'menu__item'
+                element.classList.add(this.element)
+            } else{
+                this.classes.forEach(className => element.classList.add(className))
             }
-            submit.classList.add('hide')
-            NameInput.classList.add('hide')
-            NumInput.classList.add('hide')
-            modalTitle.textContent = "Спасибо за ваш запрос. Мы свяжемся с вами."
-            modalTitle.style.color = 'green';
-            modalTitle.style.marginTop = "30px";
-            console.log("Отправленные данные:", data)
+            
+            element.innerHTML = `
+                <img src=${this.src} alt=${this.alt}>
+                <h3 class="menu__item-subtitle">${this.title}</h3>
+                <div class="menu__item-descr">${this.descr}</div>
+                <div class="menu__item-divider"></div>
+                <div class="menu__item-price">
+                    <div class="menu__item-cost">Цена:</div>
+                    <div class="menu__item-total"><span>${this.price}</span> АМД/день</div>
+                </div>
+            `
+            this.parent.append(element)
         }
     }
 
-    submit.addEventListener('click', fillingApplication)
+    new MenuCard(
+        "img/tabs/vegy.jpg",
+        "vegy",
+        'Меню "Фитнес"',
+        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+        9,
+        '.menu .container',
+    ).render();
+
+    new MenuCard(
+        "img/tabs/elite.jpg",
+        "elite",
+        'Меню “Премиум”',
+        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+        12,
+        '.menu .container',
+    ).render();
+
+    new MenuCard(
+        "img/tabs/post.jpg",
+        "post",
+        'Меню "Постное"',
+        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков. ',
+        15,
+        '.menu .container',
+    ).render();
+
+    //Forms
+
+    const forms = document.querySelectorAll('form'),
+          message = {
+            loading: 'img/form/spinner.svg',
+            success: 'Спасибо! Скоро мы с вами свяжемся',
+            failure: 'Что-то пошло не так...'
+          }
+
+    forms.forEach(item => {
+        postData(item)
+    })      
+
+   function postData(form) {
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const statusMessage = document.createElement('img');
+        statusMessage.src = message.loading
+        statusMessage.style.cssText = `
+            display: block;
+            margin: 0 auto;
+        `;
+        // form.append(statusMessage);
+        form.insertAdjacentElement('afterend', statusMessage)
+
+        const formData = new FormData(form);
+
+        const object = {};
+
+        formData.forEach(function(value, key){
+            object[key] = value;
+        })
 
 
-
-
-    // ------------------------OFFER------------------------
-
-    const leftArrow = document.querySelector('.offer__slider-prev'),
-          rightArrow = document.querySelector('.offer__slider-next'),
-          images = document.querySelectorAll('.offer__slider-wrapper') 
-          current = document.querySelector('#current')
-    
-    // let data = {
-    //     image1 : {
-    //         firstImage : images[0],
-    //         order : "01"
-    //     },
-        
-    //     image2 : {
-    //         secondImage : images[1],
-    //         order : "02"
-    //     }
-        
-    // }      
-
-    function left(i){
-        
-
+        fetch('server.php', {
+            method: "POST",
+            headers: {
+                'Content-type':'application/json'
+            },
+            body: JSON.stringify(object)
+        })
+        .then(data => data.text())
+        .then(data => {
+            console.log(data);
+            showThanksModal(message.success);
+            statusMessage.remove();
+        }).catch(() =>{
+            showThanksModal(message.failure);
+        }).finally(() => {
+            form.reset()
+        })
+  
+      });
     }
-    // let current = images[0];
-    leftArrow.addEventListener('click', () => {
-         
-    })
+
+    function showThanksModal(message){
+        
+        const prevDialog = document.querySelector('.modal__dialog')
+        prevDialog.classList.add('hide');
+        showModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+
+        thanksModal.innerHTML = `
+            <div class="modal__content">
+                <div class = "modal__close" data-close>&times;</div>
+                <div class="modal__title">${message}</div>
+            </div>
+        `;
+
+        document.querySelector('.modal').append(thanksModal);
+        setTimeout(()=>{
+            thanksModal.remove();
+            prevDialog.classList.add('show');
+            prevDialog.classList.remove('hide');
+            hideModal();
+        }, 4000)
+    }
 });

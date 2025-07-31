@@ -1,0 +1,22 @@
+{
+  "name": "resturant",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xachatur2008/Resturant-XL.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xachatur2008/Resturant-XL/issues"
+  },
+  "homepage": "https://github.com/xachatur2008/Resturant-XL#readme",
+  "description": "",
+  "devDependencies": {
+    "json-server": "^1.0.0-beta.3"
+  }
+}

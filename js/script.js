@@ -45,7 +45,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
             //------------------------TIMER------------------------
     
-    const deadline = "2025-07-20"
+    const deadline = "2025-08-31"
 
     function getTimeRemaining(endtime){
         let days, hours, minutes, seconds;
@@ -108,7 +108,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 
-                //---------------MODAL---------------
+//------------------------------------MODAL----------------------------------------
 
     const openBtns = document.querySelectorAll('[data-modal]'),
           modalWindow = document.querySelector('.modal')
@@ -157,6 +157,86 @@ window.addEventListener("DOMContentLoaded", () => {
 
      // window.addEventListener('scroll', byScroll)
 
+
+//-----------------------------Forms-----------------------------
+
+    const forms = document.querySelectorAll('form'),
+          message = {
+            loading: 'img/form/spinner.svg',
+            success: 'Спасибо! Скоро мы с вами свяжемся',
+            failure: 'Что-то пошло не так...'
+          }
+
+    forms.forEach(item => {
+        bindpostData(item)
+    })      
+
+   const postData = async (url, data) =>{
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        });
+
+        return await res.json(); 
+   };
+    
+   function bindpostData(form) {
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const statusMessage = document.createElement('img');
+        statusMessage.src = message.loading
+        statusMessage.style.cssText = `
+            display: block;
+            margin: 0 auto;
+        `;
+        // form.append(statusMessage);
+        form.insertAdjacentElement('afterend', statusMessage)
+
+        const formData = new FormData(form);
+
+        const json = JSON.stringify(Object.fromEntries(formData.entries()));
+
+
+        postData('http://localhost:3000/requests', json)
+        .then(data => {
+            console.log(data);
+            showThanksModal(message.success);
+            statusMessage.remove();
+        }).catch(() =>{
+            showThanksModal(message.failure);
+        }).finally(() => {
+            form.reset()
+        })
+      });
+    }
+
+    function showThanksModal(message){
+        
+        const prevDialog = document.querySelector('.modal__dialog')
+        prevDialog.classList.add('hide');
+        showModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+
+        thanksModal.innerHTML = `
+            <div class="modal__content">
+                <div class = "modal__close" data-close>&times;</div>
+                <div class="modal__title">${message}</div>
+            </div>
+        `;
+
+        document.querySelector('.modal').append(thanksModal);
+        setTimeout(()=>{
+            thanksModal.remove();
+            prevDialog.classList.add('show');
+            prevDialog.classList.remove('hide');
+            hideModal();
+        }, 4000)
+    }
 
 
 
@@ -235,99 +315,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 
-//-----------------------------Forms-----------------------------
-
-    const forms = document.querySelectorAll('form'),
-          message = {
-            loading: 'img/form/spinner.svg',
-            success: 'Спасибо! Скоро мы с вами свяжемся',
-            failure: 'Что-то пошло не так...'
-          }
-
-    forms.forEach(item => {
-        bindpostData(item)
-    })      
-
-   const postData = async (url, data) =>{
-        const res = await fetch(url, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: data
-        });
-
-        return await res.json(); 
-   };
-    
-   function bindpostData(form) {
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const statusMessage = document.createElement('img');
-        statusMessage.src = message.loading
-        statusMessage.style.cssText = `
-            display: block;
-            margin: 0 auto;
-        `;
-        // form.append(statusMessage);
-        form.insertAdjacentElement('afterend', statusMessage)
-
-        const formData = new FormData(form);
-
-       const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
 
-        postData('http://localhost:3000/requests', json)
-        .then(data => {
-            console.log(data);
-            showThanksModal(message.success);
-            statusMessage.remove();
-        }).catch(() =>{
-            showThanksModal(message.failure);
-        }).finally(() => {
-            form.reset()
-        })
-      });
-    }
-
-    function showThanksModal(message){
-        
-        const prevDialog = document.querySelector('.modal__dialog')
-        prevDialog.classList.add('hide');
-        showModal();
-
-        const thanksModal = document.createElement('div');
-        thanksModal.classList.add('modal__dialog');
-
-        thanksModal.innerHTML = `
-            <div class="modal__content">
-                <div class = "modal__close" data-close>&times;</div>
-                <div class="modal__title">${message}</div>
-            </div>
-        `;
-
-        document.querySelector('.modal').append(thanksModal);
-        setTimeout(()=>{
-            thanksModal.remove();
-            prevDialog.classList.add('show');
-            prevDialog.classList.remove('hide');
-            hideModal();
-        }, 4000)
-    }
-
-
-
-
-
-
-    //-------------------------------------Slider-------------------------------------
+//-------------------------------------Slider-------------------------------------
 
     const slides = document.querySelectorAll(".offer__slide"),
+          slider = document.querySelector(".offer__slider")
           current = document.querySelector("#current"),
-          total = document.querySelector('#total')
+          total = document.querySelector('#total'),
           next = document.querySelector(".offer__slider-next"),
           prev = document.querySelector(".offer__slider-prev");
+
 
    
     let slideIndex = 0;
@@ -355,9 +353,59 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function dot_opacity(arr, index){
+        arr.forEach(item => item.style.opacity = '.5');
+        arr[index].style.opacity = 1
+    }
+
     hideSlide()
     showSlide();
 
+    slider.style.position = 'relative'
+    
+    const indicators = document.createElement('ol'),
+          dots = [];
+    
+    indicators.classList.add("carousel-indicators");
+    indicators.style.cssText = `
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 15;
+        display: flex;
+        justify-content: center;
+        margin-right: 15%;
+        margin-left: 15%;
+        list-style: none;
+    `;
+    slider.append(indicators);
+
+    for(let i = 0; i<slides.length; i++){
+        const dot = document.createElement('li')
+        dot.setAttribute('data-slide-to', i + 1)
+        dot.style.cssText = `
+            box-sizing: content-box;
+            box-sizing: content-box;
+            flex: 0 1 auto;
+            width: 30px;
+            height: 6px;
+            margin-right: 3px;
+            margin-left: 3px;
+            cursor: pointer;
+            background-color: #fff;
+            background-clip: padding-box;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            opacity: .5;
+            transition: opacity .6s ease;
+        `;
+        if(i == 0){
+            dot.style.opacity = 1;
+        }
+        indicators.append(dot)
+        dots.push(dot)
+    }
     next.addEventListener('click', ()=>{
         slideIndex++;
         if(slideIndex >= slides.length){
@@ -365,17 +413,165 @@ window.addEventListener("DOMContentLoaded", () => {
         }
         hideSlide()
         showSlide(slideIndex)
+
+        dot_opacity(dots, slideIndex)
     })
 
     prev.addEventListener('click', ()=>{
         slideIndex--;
         if(slideIndex < 0){
-            slideIndex = 3;
+            slideIndex = slides.length - 1;;
         }
         hideSlide()
         showSlide(slideIndex)
+
+        dot_opacity(dots, slideIndex)
     })
 
-});
+   setInterval(() => {
+        slideIndex++;
+        if (slideIndex >= slides.length) {
+            slideIndex = 0;
+        }
+        hideSlide();
+        showSlide(slideIndex);
+        dot_opacity(dots, slideIndex);
+    }, 4000);
 
- 
+    dots.forEach(dot => {
+        dot.addEventListener('click', (e) => {
+            const slideTo = e.target.getAttribute('data-slide-to')
+            slideIndex = slideTo - 1;
+            hideSlide();
+            showSlide(slideIndex)
+            dot_opacity(dots, slideIndex)
+        })
+    })
+
+    //----------------------------Calculator of calories----------------------------
+
+
+    const result = document.querySelector(".calculating__result span"),
+          menuType = document.querySelector(".menu-type")
+   
+    let sex, height, weight, age, ratio;
+    
+    function initLocalSettings(selector, activeClass){
+        const elements = document.querySelectorAll(selector)
+        
+        elements.forEach(element =>{
+            element.classList.remove(activeClass);
+            if(element.getAttribute('id') === localStorage.getItem('sex')){
+                element.classList.add(activeClass)
+            }
+            if(element.getAttribute('data-ratio') === localStorage.getItem('ratio')){
+                element.classList.add(activeClass)
+            }
+        })
+    }
+
+    
+    if(localStorage.getItem('sex')){
+        sex = localStorage.getItem('sex')
+    }else{
+        sex = 'female'
+        localStorage.setItem('sex', 'female')
+    }
+
+    
+    if(localStorage.getItem('ratio')){
+        ratio = +localStorage.getItem('ratio')
+    }else{
+        ratio = 1.375
+        localStorage.setItem('ratio', 1.375)
+    }
+
+    function calcTotal(){
+        if(!sex || !height || !weight || !age || !ratio){
+            result.textContent = '____'
+            menuType.textContent = ''
+            return;
+        }
+
+        if(sex === 'female'){
+            result.textContent = Math.round((447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age)) * ratio)
+        }else {
+            result.textContent = Math.round((88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age)) * ratio)
+        }
+
+        let calories = +result.textContent
+        const menu = getMenuByCalories(calories);
+        document.querySelector('.menu-type').textContent = `Рекомендуемое меню: ${menu}`;
+    }
+
+    calcTotal()
+
+    function getStaticData(parentSelector, activeClass){
+        const elements = document.querySelectorAll(`${parentSelector} div`);
+
+        document.querySelector(parentSelector).addEventListener('click', (e) => {
+            if(e.target.classList.contains('calculating__choose-item')){
+                if(e.target.getAttribute('data-ratio')){
+                    ratio = +e.target.getAttribute('data-ratio')
+                    localStorage.setItem('ratio', +e.target.getAttribute('data-ratio'))
+                }else{
+                    sex = e.target.getAttribute('id')
+                    localStorage.setItem('sex', e.target.getAttribute('id'))
+                }
+
+                elements.forEach(elem => {
+                    elem.classList.remove(activeClass)
+                })
+                e.target.classList.add(activeClass)
+            }
+              calcTotal()
+        })
+    }
+
+    function getDynamicData(selector){
+        const input = document.querySelector(selector);
+
+        input.addEventListener('input', () => {
+
+            if(input.value.match(/\D/g)){
+                input.style.border = '1px solid red'
+            }else{
+              input.style.border = 'none'  
+            }
+
+            switch(input.getAttribute('id')){
+                case 'height':
+                    height = +input.value
+                    break;
+                case 'weight':
+                    weight = +input.value
+                    break;
+                case 'age':
+                    age = +input.value
+                    break;
+            }
+              calcTotal()
+        })
+    }
+
+    function getMenuByCalories(calories) {
+    if (calories < 1800) {
+        return 'Фитнес';
+    } else if (calories >= 1800 && calories <= 2500) {
+        return 'Сбалансированное';
+    } else {
+        return 'Премиум';
+    }
+}
+
+    initLocalSettings('#gender div', 'calculating__choose-item_active');
+    initLocalSettings('.calculating__choose_big ', 'calculating__choose-item_active');
+
+    getDynamicData('#height')
+    getDynamicData('#weight')
+    getDynamicData('#age')
+
+    getStaticData('#gender', 'calculating__choose-item_active');
+    getStaticData('.calculating__choose_big', 'calculating__choose-item_active');
+
+});

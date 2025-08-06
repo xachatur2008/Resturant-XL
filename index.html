@@ -154,8 +154,8 @@
                     Ваш пол
                 </div>
                 <div class="calculating__choose" id="gender">
-                    <div class="calculating__choose-item calculating__choose-item_active">Женщина</div>
-                    <div class="calculating__choose-item">Мужчина</div>
+                    <div id="female" class="calculating__choose-item calculating__choose-item_active">Женщина</div>
+                    <div id="male" class="calculating__choose-item">Мужчина</div>
                 </div>
 
                 <div class="calculating__subtitle">
@@ -171,10 +171,10 @@
                     Выберите вашу физическая активность
                 </div>
                 <div class="calculating__choose calculating__choose_big">
-                    <div id="low" class="calculating__choose-item">Низкая активность </div>
-                    <div id="small"  class="calculating__choose-item calculating__choose-item_active">Невысокая активность</div>
-                    <div id="medium" class="calculating__choose-item">Умеренная активность</div>
-                    <div id="high" class="calculating__choose-item">Высокая активность</div>
+                    <div data-ratio="1.2" id="low" class="calculating__choose-item">Низкая активность </div>
+                    <div data-ratio="1.375" id="small"  class="calculating__choose-item calculating__choose-item_active">Невысокая активность</div>
+                    <div data-ratio="1.55" id="medium" class="calculating__choose-item">Умеренная активность</div>
+                    <div data-ratio="1.725" id="high" class="calculating__choose-item">Высокая активность</div>
                 </div>
 
                 <div class="calculating__divider"></div>
@@ -184,7 +184,8 @@
                         Ваша суточная норма калорий:
                     </div>
                     <div class="calculating__result">
-                        <span>2700</span> ккал
+                        <span>2700</span> ккал 
+                        <div class="menu-type"></div>
                     </div>
                 </div>
             </div>
@@ -207,9 +208,9 @@
             <div class="title">Заказывай пробный день прямо сейчас!</div>
             <form action="#" class="order__form">
                 <input required placeholder="Ваше имя" name="name" type="text" class="order__input">
-                <input required placeholder="Ваш номер телефона" name="phone" type="phone" class="order__input">
+                <input required placeholder="Ваш номер телефона" name="phone" type="tel" class="order__input">
                 <img src="icons/right.svg" alt="right">
-                <button class="btn btn_dark btn_min">Перезвонить мне</button>
+                <button class="btn btn_dark btn_min" type="submit">Перезвонить мне</button>
             </form>
         </div>
     </div>
@@ -225,7 +226,7 @@
                     Мы ценим каждого клиента и предлагаем вам стать одним из них на очень выгодных условиях. 
                     Каждому, кто закажет доставку питание на неделю, будет предоставлена скидка в размере <span>20%!</span>
                     <br><br>
-                    Акция закончится 20 мая в 00:00
+                    Акция закончится 31 августа в 00:00
                 </div>
             </div>
             <div class="promotion__timer">
@@ -273,7 +274,7 @@
     <div class="modal">
         <div class="modal__dialog">
             <div class="modal__content">
-                <form action="#">
+                <form>
                     <div data-close class="modal__close">&times;</div>
                     <div class="modal__title">Мы свяжемся с вами как можно быстрее!</div>
                     <input  required placeholder="Ваше имя" name="name" type="text" class="modal__input nameInput">
@@ -285,7 +286,7 @@
                             <option value="+44">🇬🇧 +44</option>
                             <option value="+65">🇸🇬 +65</option>
                         </select>
-                        <input required placeholder = "Ваш номер телефона" name="phone" type="phone" class="phone-number" placeholder="9123 4567">
+                        <input required placeholder = "Ваш номер телефона" name="phone" type="tel" class="phone-number" placeholder="9123 4567">
                     </div>
                     <button class="mbtn btn btn_dark btn_min" type="submit" >Перезвонить мне</button>
                 </form>
